@@ -53,8 +53,11 @@ func (d *dDnsArgSt) UrlEncode() {
 	}
 }
 
-func (d *dDnsArgSt) GenUrl() string {
+func (d *dDnsArgSt) GenUrl(isSig bool) string {
 	urlStr := consts.BaseUrl
+	if isSig {
+		urlStr = consts.SigBaseUrl
+	}
 	for i, a := range d.args {
 		field := "&"
 		if i <= 0 {
@@ -66,7 +69,7 @@ func (d *dDnsArgSt) GenUrl() string {
 }
 
 func (d *dDnsArgSt) GenSignature() {
-	urlStr := d.GenUrl()
+	urlStr := d.GenUrl(true)
 	h := hmac.New(sha256.New, []byte(consts.SecretKey))
 	_, err := h.Write([]byte(urlStr))
 	if err != nil {
@@ -74,7 +77,7 @@ func (d *dDnsArgSt) GenSignature() {
 	}
 	sig := base64.StdEncoding.EncodeToString(h.Sum(nil))
 	d.args = append(d.args, arg{
-		key:   "signature",
+		key:   "Signature",
 		value: sig,
 	})
 }
