@@ -21,8 +21,8 @@ func GetExternalIP() (string, bool) {
 	}
 	ips := strings.Split(string(body), "\n")
 	ipStr := ips[0]
-	log.Printf("Get ExternalIP=%s oldIP=%s", ipStr, ipAddr)
 	if ipAddr != ipStr {
+		log.Printf("Get ExternalIP=%s oldIP=%s", ipStr, ipAddr)
 		ipAddr = ipStr
 		return ipStr, true
 	}

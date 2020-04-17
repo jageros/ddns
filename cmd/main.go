@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ddns_pro/consts"
 	"ddns_pro/ddns"
 	extip "ddns_pro/ext_ip"
 	"log"
@@ -20,7 +21,7 @@ func main() {
 	go func() {
 		sig := make(chan os.Signal)
 		signal.Notify(sig, os.Kill, os.Interrupt, syscall.SIGINT)
-		t := time.Tick(time.Second * 60)
+		t := time.Tick(time.Second * consts.CheckSecond)
 		for {
 			select {
 			case <-sig:
