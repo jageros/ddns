@@ -18,8 +18,8 @@ func getRecordId() string {
 		"Timestamp":       strconv.FormatInt(time.Now().Unix(), 10),
 		"Nonce":           strconv.Itoa(rand.Intn(10000)),
 		"SignatureMethod": "HmacSHA256",
-		"domain":          "hawtech.cn",
-		"subDomain":       "pi",
+		"domain":          consts.Domain,
+		"subDomain":       consts.SubDomain,
 	}
 	ags := newDDnsArgSt(key2val)
 	ags.GenSignature()
