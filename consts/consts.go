@@ -9,3 +9,7 @@ const (
 	SubDomain   = "pi"
 	CheckSecond = 60
 )
+
+var (
+	SubDomains = []string{"pi"}
+)

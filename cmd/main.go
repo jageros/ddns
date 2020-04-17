@@ -32,8 +32,10 @@ func main() {
 			case <-t:
 				ip, update := extip.GetExternalIP()
 				if update {
-					ddns.SetDns(ip)
-
+					for _, subDomain := range consts.SubDomains {
+						ddns.SetDns(ip, subDomain)
+						time.Sleep(time.Second)
+					}
 				}
 			}
 		}

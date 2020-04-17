@@ -90,7 +90,7 @@ func (d *dDnsArgSt) GenSignature() {
 
 // ================
 
-func SetDns(ipAddr string) {
+func SetDns(subDomain, ipAddr string) {
 	key2val := map[string]string{
 		"Action":          "RecordModify",
 		"SecretId":        consts.SecretId,
@@ -98,8 +98,8 @@ func SetDns(ipAddr string) {
 		"Nonce":           strconv.Itoa(rand.Intn(10000)),
 		"SignatureMethod": "HmacSHA256",
 		"domain":          consts.Domain,
-		"recordId":        getRecordId(),
-		"subDomain":       consts.SubDomain,
+		"recordId":        getRecordId(subDomain),
+		"subDomain":       subDomain,
 		"recordType":      "A",
 		"recordLine":      "默认",
 		"value":           ipAddr,

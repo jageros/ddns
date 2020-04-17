@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func getRecordId() string {
+func getRecordId(subDomain string) string {
 	key2val := map[string]string{
 		"Action":          "RecordList",
 		"SecretId":        consts.SecretId,
@@ -19,7 +19,7 @@ func getRecordId() string {
 		"Nonce":           strconv.Itoa(rand.Intn(10000)),
 		"SignatureMethod": "HmacSHA256",
 		"domain":          consts.Domain,
-		"subDomain":       consts.SubDomain,
+		"subDomain":       subDomain,
 	}
 	ags := newDDnsArgSt(key2val)
 	ags.GenSignature()
