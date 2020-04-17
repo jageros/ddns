@@ -5,10 +5,16 @@ import (
 	"crypto/sha256"
 	"ddns_pro/consts"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"math/rand"
+	"net/http"
 	"net/url"
 	"sort"
+	"strconv"
+	"time"
 )
 
 type arg struct {
@@ -35,7 +41,7 @@ func (d *dDnsArgSt) Swap(i, j int) {
 
 // ========================================================
 
-func NewDDnsArgSt(ms map[string]string) *dDnsArgSt {
+func newDDnsArgSt(ms map[string]string) *dDnsArgSt {
 	da := &dDnsArgSt{}
 	for key, val := range ms {
 		da.args = append(da.args, arg{
@@ -80,4 +86,41 @@ func (d *dDnsArgSt) GenSignature() {
 		key:   "Signature",
 		value: sig,
 	})
+}
+
+// ================
+
+func SetDns(ipAddr string) {
+	key2val := map[string]string{
+		"Action":          "RecordModify",
+		"SecretId":        consts.SecretId,
+		"Timestamp":       strconv.FormatInt(time.Now().Unix(), 10),
+		"Nonce":           strconv.Itoa(rand.Intn(10000)),
+		"SignatureMethod": "HmacSHA256",
+		"domain":          "hawtech.cn",
+		"recordId":        getRecordId(),
+		"subDomain":       "pi",
+		"recordType":      "A",
+		"recordLine":      "默认",
+		"value":           ipAddr,
+	}
+	ags := newDDnsArgSt(key2val)
+	ags.GenSignature()
+	ags.UrlEncode()
+	urlStr := ags.GenUrl(false)
+	//fmt.Println(urlStr)
+
+	resp, err := http.Get(urlStr)
+	if err != nil {
+		log.Printf("http get err: %v", err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		log.Printf("read body err: %v", err)
+	}
+	reply := map[string]interface{}{}
+	err = json.Unmarshal(body, &reply)
+	code := reply["code"].(float64)
+	log.Printf("Update Dns status code=%d", int(code))
 }
