@@ -19,6 +19,7 @@ func main() {
 	wait := &sync.WaitGroup{}
 	wait.Add(1)
 	go func() {
+		checkDns()
 		sig := make(chan os.Signal)
 		signal.Notify(sig, os.Kill, os.Interrupt, syscall.SIGINT)
 		t := time.Tick(time.Second * consts.CheckSecond)
@@ -30,15 +31,19 @@ func main() {
 				return
 
 			case <-t:
-				ip, update := extip.GetExternalIP()
-				if update {
-					for _, subDomain := range consts.SubDomains {
-						ddns.SetDns(ip, subDomain)
-						time.Sleep(time.Second)
-					}
-				}
+				checkDns()
 			}
 		}
 	}()
 	wait.Wait()
+}
+
+func checkDns() {
+	ip, update := extip.GetExternalIP()
+	if update {
+		for _, subDomain := range consts.SubDomains {
+			ddns.SetDns(subDomain, ip)
+			time.Sleep(time.Second)
+		}
+	}
 }
