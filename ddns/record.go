@@ -46,7 +46,6 @@ func getID(arg map[string]interface{}) string {
 	if arg["code"].(float64) != 0 {
 		log.Printf("get record list err, reply=%v", arg)
 	}
-	log.Printf("get record list err, reply=%v", arg)
 	arg1, ok := arg["data"].(map[string]interface{})["records"].([]interface{})[0].(map[string]interface{})["id"].(float64)
 	if !ok {
 		return ""
