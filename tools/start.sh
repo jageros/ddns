@@ -1,4 +1,5 @@
 #! /bin/sh
+cd /home/pi/mypro/ddns
 mkdir -p logs
 touch logs/ddns.log
 mkdir -p pids
