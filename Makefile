@@ -3,15 +3,15 @@
 #arch ?= amd64
 #archs = amd64 armv7
 
-all: cmd
+all: ddns
 
-define build_cmd
+define build_ddns
         @echo 'building $(1) ...'
-        @GOOS=$(2) GOARCH=$(3) go build -o ./build/cmd ./$(1)
+        @GOOS=$(2) GOARCH=$(3) go build -o ./build/ddns ./$(1)
         @echo 'build $(1) done'
 endef
 
-cmd:
-	$(call build_cmd,cmd,$(plat), $(arch))
+ddns:
+	$(call build_ddns,ddns,$(plat), $(arch))
 
-.PHONY: cmd
+.PHONY: ddns
