@@ -12,6 +12,6 @@ define build_ddns
 endef
 
 ddns:
-	$(call build_ddns,ddns,$(plat), $(arch))
+	$(call build_ddns,cmd,$(plat), $(arch))
 
 .PHONY: ddns
