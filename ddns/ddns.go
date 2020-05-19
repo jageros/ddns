@@ -3,6 +3,7 @@ package ddns
 import (
 	"crypto/hmac"
 	"crypto/sha256"
+	"ddns_pro/config"
 	"ddns_pro/consts"
 	"encoding/base64"
 	"encoding/json"
@@ -76,7 +77,7 @@ func (d *dDnsArgSt) GenUrl(isSig bool) string {
 
 func (d *dDnsArgSt) GenSignature() {
 	urlStr := d.GenUrl(true)
-	h := hmac.New(sha256.New, []byte(consts.SecretKey))
+	h := hmac.New(sha256.New, []byte(config.CFG.SecretKey))
 	_, err := h.Write([]byte(urlStr))
 	if err != nil {
 		log.Printf("write err: %v", err)
@@ -92,11 +93,11 @@ func (d *dDnsArgSt) GenSignature() {
 
 func SetDns(subDomain, ipAddr string) {
 	key2val := map[string]string{
-		"SecretId":        consts.SecretId,
+		"SecretId":        config.CFG.SecretId,
 		"Timestamp":       strconv.FormatInt(time.Now().Unix(), 10),
 		"Nonce":           strconv.Itoa(rand.Intn(10000)),
 		"SignatureMethod": "HmacSHA256",
-		"domain":          consts.Domain,
+		"domain":          config.CFG.Domain,
 		"subDomain":       subDomain,
 		"recordType":      "A",
 		"recordLine":      "默认",
@@ -105,7 +106,7 @@ func SetDns(subDomain, ipAddr string) {
 	recordId := getRecordId(subDomain)
 	if recordId == "" {
 		key2val["Action"] = "RecordCreate"
-	}else {
+	} else {
 		key2val["Action"] = "RecordModify"
 		key2val["recordId"] = recordId
 	}
@@ -127,5 +128,5 @@ func SetDns(subDomain, ipAddr string) {
 	reply := map[string]interface{}{}
 	err = json.Unmarshal(body, &reply)
 	code := reply["code"].(float64)
-	log.Printf("Update Dns status code=%d", int(code))
+	log.Printf("Update %s.%s Dns status code=%d", subDomain, config.CFG.Domain, int(code))
 }

@@ -9,4 +9,4 @@ fi
 echo "kill $single ddns"
 for pid in `cat pids/ddns.pid`; do kill ${single} ${pid}; done
 sleep 1s
-ps aux|grep ./builder/ddns
+ps aux|grep ./build/ddns | grep -v grep

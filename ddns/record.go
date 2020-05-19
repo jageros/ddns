@@ -1,7 +1,7 @@
 package ddns
 
 import (
-	"ddns_pro/consts"
+	"ddns_pro/config"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -14,11 +14,11 @@ import (
 func getRecordId(subDomain string) string {
 	key2val := map[string]string{
 		"Action":          "RecordList",
-		"SecretId":        consts.SecretId,
+		"SecretId":        config.CFG.SecretId,
 		"Timestamp":       strconv.FormatInt(time.Now().Unix(), 10),
 		"Nonce":           strconv.Itoa(rand.Intn(10000)),
 		"SignatureMethod": "HmacSHA256",
-		"domain":          consts.Domain,
+		"domain":          config.CFG.Domain,
 		"subDomain":       subDomain,
 	}
 	ags := newDDnsArgSt(key2val)

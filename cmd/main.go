@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ddns_pro/consts"
+	"ddns_pro/config"
 	"ddns_pro/ddns"
 	extip "ddns_pro/ext_ip"
 	"log"
@@ -22,7 +22,7 @@ func main() {
 		checkDns()
 		sig := make(chan os.Signal)
 		signal.Notify(sig, os.Kill, os.Interrupt, syscall.SIGINT)
-		t := time.Tick(time.Second * consts.CheckSecond)
+		t := time.Tick(time.Second * time.Duration(config.CFG.CheckTime))
 		for {
 			select {
 			case <-sig:
@@ -41,7 +41,7 @@ func main() {
 func checkDns() {
 	ip, update := extip.GetExternalIP()
 	if update {
-		for _, subDomain := range consts.SubDomains {
+		for _, subDomain := range config.CFG.SubDomains {
 			ddns.SetDns(subDomain, ip)
 			time.Sleep(time.Second)
 		}
