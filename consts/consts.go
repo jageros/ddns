@@ -11,5 +11,5 @@ const (
 )
 
 var (
-	SubDomains = []string{"pi"}
+	SubDomains = []string{"jager", "jay", "os", "jageros", "jayos"}
 )

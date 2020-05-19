@@ -92,17 +92,22 @@ func (d *dDnsArgSt) GenSignature() {
 
 func SetDns(subDomain, ipAddr string) {
 	key2val := map[string]string{
-		"Action":          "RecordModify",
 		"SecretId":        consts.SecretId,
 		"Timestamp":       strconv.FormatInt(time.Now().Unix(), 10),
 		"Nonce":           strconv.Itoa(rand.Intn(10000)),
 		"SignatureMethod": "HmacSHA256",
 		"domain":          consts.Domain,
-		"recordId":        getRecordId(subDomain),
 		"subDomain":       subDomain,
 		"recordType":      "A",
 		"recordLine":      "默认",
 		"value":           ipAddr,
+	}
+	recordId := getRecordId(subDomain)
+	if recordId == "" {
+		key2val["Action"] = "RecordCreate"
+	}else {
+		key2val["Action"] = "RecordModify"
+		key2val["recordId"] = recordId
 	}
 	ags := newDDnsArgSt(key2val)
 	ags.GenSignature()
