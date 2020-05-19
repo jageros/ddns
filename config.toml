@@ -1,0 +1,6 @@
+[config]
+secretId = "AKIDjHfmcBt4MN70cdis65oHsDKArJUPJ9x0"
+secretKey = "va1C6kUzECuNZbNHuJTNL3UeZWhbFdkS"
+domain = "hawtech.cn"   #主域名
+subDomains = ["jager", "jay", "os", "jageros", "jayos"]  #子域名
+checkTime = 60  #检查时间, 秒
