@@ -9,9 +9,9 @@ import (
 
 var ipAddr string
 
-// ====== from http://ipinfo.io/ip ======
+// ====== from https://ifconfig.co/ip ======
 func GetExternalIP() (string, bool) {
-	resp, err := http.Get("http://ipinfo.io/ip")
+	resp, err := http.Get("https://ifconfig.co/ip")
 	if err != nil {
 		log.Printf("http get err: %v", err)
 	}
@@ -32,7 +32,7 @@ func GetExternalIP() (string, bool) {
 
 // ====== from https://2020.ip138.com ======
 func GetExtIP() (string, bool) {
-	resp, err := http.Get("https://2020.ip138.com")
+	resp, err := http.Get("https://2021.ip138.com")
 	if err != nil {
 		log.Printf("http get err: %v", err)
 	}
@@ -43,6 +43,7 @@ func GetExtIP() (string, bool) {
 	}
 	var ipStr string
 	for _, line := range strings.Split(string(body), "\n") {
+		log.Println(line)
 		if strings.HasPrefix(line, "<title>您的IP地址是") {
 			ipStr = strings.Split(line[27:], "<")[0]
 			break
