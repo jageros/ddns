@@ -1,13 +1,29 @@
 package extip
 
 import (
+	"github.com/jageros/hawox/httpc"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
 )
 
-var ipAddr string
+var (
+	ipAddr string
+)
+
+func GetMyIp() (string, bool) {
+	resp, err := httpc.Request(httpc.GET, "http://idata.hawtech.cn/my-ip", httpc.FORM, nil, nil)
+	if err != nil {
+		return ipAddr, false
+	}
+	ip := string(resp)
+	if ipAddr != ip {
+		ipAddr = ip
+		return ip, true
+	}
+	return ip, false
+}
 
 // ====== from https://ifconfig.co/ip ======
 func GetExternalIP() (string, bool) {

@@ -39,11 +39,10 @@ func main() {
 }
 
 func checkDns() {
-	ip, update := extip.GetExternalIP()
+	ip, update := extip.GetMyIp()
 	if update {
 		for _, subDomain := range config.CFG.SubDomains {
 			ddns.SetDns(subDomain, ip)
-			time.Sleep(time.Second)
 		}
 	}
 }
