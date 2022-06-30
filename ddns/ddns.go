@@ -128,5 +128,5 @@ func SetDns(subDomain, ipAddr string) {
 	reply := map[string]interface{}{}
 	err = json.Unmarshal(body, &reply)
 	code := reply["code"].(float64)
-	log.Printf("Update %s.%s Dns status code=%d", subDomain, config.CFG.Domain, int(code))
+	log.Printf("Update %s.%s Dns ip=%s status code=%d", subDomain, config.CFG.Domain, ipAddr, int(code))
 }

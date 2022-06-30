@@ -18,6 +18,7 @@ type AppConfig struct {
 	Domain     string   `toml:"domain"`
 	SubDomains []string `toml:"subDomains"`
 	CheckTime  int      `toml:"checkTime"`
+	NetCard    string   `toml:"netCard"`
 }
 
 func init() {

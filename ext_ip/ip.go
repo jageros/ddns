@@ -1,32 +1,26 @@
 package extip
 
 import (
+	"errors"
 	"github.com/jageros/hawox/httpc"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 )
 
-var (
-	ipAddr string
-)
-
-func GetMyIp() (string, bool) {
+func GetMyOutIp() (string, error) {
 	resp, err := httpc.Request(httpc.GET, "http://idata.hawtech.cn/my-ip", httpc.FORM, nil, nil)
 	if err != nil {
-		return ipAddr, false
+		return "", err
 	}
 	ip := string(resp)
-	if ipAddr != ip {
-		ipAddr = ip
-		return ip, true
-	}
-	return ip, false
+	return ip, nil
 }
 
-// ====== from https://ifconfig.co/ip ======
-func GetExternalIP() (string, bool) {
+// GetExternalIP from https://ifconfig.co/ip
+func GetExternalIP() (string, error) {
 	resp, err := http.Get("https://ifconfig.co/ip")
 	if err != nil {
 		log.Printf("http get err: %v", err)
@@ -38,24 +32,19 @@ func GetExternalIP() (string, bool) {
 	}
 	ips := strings.Split(string(body), "\n")
 	ipStr := ips[0]
-	if ipAddr != ipStr {
-		log.Printf("Get ExternalIP=%s oldIP=%s", ipStr, ipAddr)
-		ipAddr = ipStr
-		return ipStr, true
-	}
-	return ipStr, false
+	return ipStr, nil
 }
 
 // ====== from https://2020.ip138.com ======
-func GetExtIP() (string, bool) {
+func GetExtIP() (string, error) {
 	resp, err := http.Get("https://2021.ip138.com")
 	if err != nil {
-		log.Printf("http get err: %v", err)
+		return "", err
 	}
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Printf("err: %v", err)
+		return "", err
 	}
 	var ipStr string
 	for _, line := range strings.Split(string(body), "\n") {
@@ -69,10 +58,26 @@ func GetExtIP() (string, bool) {
 			break
 		}
 	}
-	if ipAddr != ipStr {
-		log.Printf("Get ExternalIP=%s oldIP=%s", ipStr, ipAddr)
-		ipAddr = ipStr
-		return ipStr, true
+	return ipStr, nil
+}
+
+func GetMyIp(netCard string) (string, error) {
+	ift, err := net.InterfaceByName(netCard)
+	if err != nil {
+		return "", err
 	}
-	return ipStr, false
+	addrs, err := ift.Addrs()
+	if err != nil {
+		return "", err
+	}
+
+	for _, addr := range addrs {
+		// 检查ip地址判断是否回环地址
+		if ipnet, ok := addr.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				return ipnet.IP.String(), nil
+			}
+		}
+	}
+	return "", errors.New("NotExistIpErr")
 }

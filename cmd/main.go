@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+var ipAddr string
+
 func main() {
 	rand.Seed(time.Now().Unix())
 
@@ -39,8 +41,13 @@ func main() {
 }
 
 func checkDns() {
-	ip, update := extip.GetMyIp()
-	if update {
+	ip, err := extip.GetMyIp(config.CFG.NetCard)
+	if err != nil {
+		log.Printf("获取IP地址失败：%v", err)
+		return
+	}
+	if ipAddr != ip {
+		ipAddr = ip
 		for _, subDomain := range config.CFG.SubDomains {
 			ddns.SetDns(subDomain, ip)
 		}
