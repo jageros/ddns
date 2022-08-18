@@ -6,10 +6,6 @@ import (
 	extip "ddns_pro/ext_ip"
 	"log"
 	"math/rand"
-	"os"
-	"os/signal"
-	"sync"
-	"syscall"
 	"time"
 )
 
@@ -17,27 +13,27 @@ var ipAddr string
 
 func main() {
 	rand.Seed(time.Now().Unix())
-
-	wait := &sync.WaitGroup{}
-	wait.Add(1)
-	go func() {
-		checkDns()
-		sig := make(chan os.Signal)
-		signal.Notify(sig, os.Kill, os.Interrupt, syscall.SIGINT)
-		t := time.Tick(time.Second * time.Duration(config.CFG.CheckTime))
-		for {
-			select {
-			case <-sig:
-				log.Printf("Goroutine has exit !")
-				wait.Done()
-				return
-
-			case <-t:
-				checkDns()
-			}
-		}
-	}()
-	wait.Wait()
+	checkDns()
+	//wait := &sync.WaitGroup{}
+	//wait.Add(1)
+	//go func() {
+	//	checkDns()
+	//	sig := make(chan os.Signal)
+	//	signal.Notify(sig, os.Kill, os.Interrupt, syscall.SIGINT)
+	//	t := time.Tick(time.Second * time.Duration(config.CFG.CheckTime))
+	//	for {
+	//		select {
+	//		case <-sig:
+	//			log.Printf("Goroutine has exit !")
+	//			wait.Done()
+	//			return
+	//
+	//		case <-t:
+	//			checkDns()
+	//		}
+	//	}
+	//}()
+	//wait.Wait()
 }
 
 func checkDns() {
