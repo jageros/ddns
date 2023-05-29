@@ -1,6 +1,6 @@
 [config]
-secretId = "AKIDjHfmcBt4MN70cdis65oHsDKArJUPJ9x0"
-secretKey = "va1C6kUzECuNZbNHuJTNL3UeZWhbFdkS"
+secretId = "xxxxxxxx"
+secretKey = "xxxxxxxxx"
 domain = "fantasyland.ink"   #主域名
 subDomains = ["admin", "rummy", "update", "back"]  #子域名
 checkTime = 60  #检查时间, 秒
